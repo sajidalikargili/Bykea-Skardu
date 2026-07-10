@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:bykea_skardu/core/service/firebase_service.dart';
 import 'package:bykea_skardu/features/auth/bloc/auth_event.dart';
 import 'package:bykea_skardu/features/auth/bloc/auth_state.dart';
 import 'package:bykea_skardu/features/auth/data/auth_repository.dart';
@@ -21,15 +22,53 @@ class AuthBloc extends Bloc<AuthEvent,AuthState> {
    }
 
  }
- Future<void> _login(LoginEvent event,Emitter<AuthState> state)async{
-   emit(AuthLoading());
-   try{
-       await authRepository.login(event.phone, event.password);
-       emit(AuthSuccess());
-   }catch(e){
-       emit(AuthFailure(e.toString()));
-   }
- }
+  Future<void> _login(
+      LoginEvent event,
+      Emitter<AuthState> emit,
+      ) async {
+    emit(AuthLoading());
+
+    try {
+      await authRepository.login(
+        event.phone,
+        event.password,
+      );
+
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+  // Future<void> _login(
+  //     LoginEvent event,
+  //     Emitter<AuthState> emit,
+  //     ) async {
+  //   emit(AuthLoading());
+  //
+  //   try {
+  //     await authRepository.login(
+  //       event.phone,
+  //       event.password,
+  //     );
+  //
+  //     final user = await FirebaseService.getCurrentUser();
+  //
+  //     if (user == null) {
+  //       emit(AuthFailure("User not found"));
+  //       return;
+  //     }
+  //
+  //     if (user.role == null || user.role!.isEmpty) {
+  //       emit(AuthNeedRole());
+  //     } else if (user.role == "passenger") {
+  //       emit(AuthPassenger());
+  //     } else {
+  //       emit(AuthRider());
+  //     }
+  //   } catch (e) {
+  //     emit(AuthFailure(e.toString()));
+  //   }
+  // }
 
  Future<void> _logOut(logOutEvent event,Emitter<AuthState> state) async{
    emit(AuthLoading());

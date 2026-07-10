@@ -89,27 +89,109 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
               const SizedBox(height: 20),
-             BlocConsumer<AuthBloc,AuthState>( listener: (context,state){
-               if(state is AuthSuccess){
-                 phoneController.clear();
-                 passwordController.clear();
-                 Navigator.pushNamed(context, AppRoutes.chooseRole);
-               }
-              if(state is AuthFailure){
-                HelperMethod.showMessage(state.message, context);
-              }
-             },builder: (context,state){
-               return  SizedBox(
-                 width: double.infinity,
-                 height: 55,
-                 child: ElevatedButton(
-                   onPressed: state is AuthLoading ? null :() {
-                     context.read<AuthBloc>().add(LoginEvent(phoneController.text.trim(), passwordController.text.trim()));
-                   },
-                   child:state is AuthLoading ? const CircularProgressIndicator() : const Text("Login"),
-                 ),
-               );
-             },),
+              BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthSuccess) {
+                    phoneController.clear();
+                    passwordController.clear();
+
+                    Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.splash,
+                    );
+                  }
+
+                  if (state is AuthFailure) {
+                    HelperMethod.showMessage(
+                      state.message,
+                      context,
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: state is AuthLoading
+                          ? null
+                          : () {
+                        context.read<AuthBloc>().add(
+                          LoginEvent(
+                            phoneController.text.trim(),
+                            passwordController.text.trim(),
+                          ),
+                        );
+                      },
+                      child: state is AuthLoading
+                          ? const CircularProgressIndicator()
+                          : const Text("Login"),
+                    ),
+                  );
+                },
+              ),
+              // BlocConsumer<AuthBloc, AuthState>(
+              //   listener: (context, state) {
+              //     if (state is AuthSuccess) {
+              //       phoneController.clear();
+              //       passwordController.clear();
+              //
+              //       Navigator.pushReplacementNamed(
+              //         context,
+              //         AppRoutes.splash,
+              //       );
+              //     }
+              //
+              //     if (state is AuthFailure) {
+              //       HelperMethod.showMessage(
+              //         state.message,
+              //         context,
+              //       );
+              //     }
+              //   },
+              //   builder: (context, state) {
+              //     return SizedBox(
+              //       width: double.infinity,
+              //       height: 55,
+              //       child: ElevatedButton(
+              //         onPressed: state is AuthLoading
+              //             ? null
+              //             : () {
+              //           context.read<AuthBloc>().add(
+              //             LoginEvent(
+              //               phoneController.text.trim(),
+              //               passwordController.text.trim(),
+              //             ),
+              //           );
+              //         },
+              //         child: state is AuthLoading
+              //             ? const CircularProgressIndicator()
+              //             : const Text("Login"),
+              //       ),
+              //     );
+              //   },
+              // ),
+             // BlocConsumer<AuthBloc,AuthState>( listener: (context,state){
+             //   if(state is AuthSuccess){
+             //     phoneController.clear();
+             //     passwordController.clear();
+             //     Navigator.pushNamed(context, AppRoutes.chooseRole);
+             //   }
+             //  if(state is AuthFailure){
+             //    HelperMethod.showMessage(state.message, context);
+             //  }
+             // },builder: (context,state){
+             //   return  SizedBox(
+             //     width: double.infinity,
+             //     height: 55,
+             //     child: ElevatedButton(
+             //       onPressed: state is AuthLoading ? null :() {
+             //         context.read<AuthBloc>().add(LoginEvent(phoneController.text.trim(), passwordController.text.trim()));
+             //       },
+             //       child:state is AuthLoading ? const CircularProgressIndicator() : const Text("Login"),
+             //     ),
+             //   );
+             // },),
 
 
               const Spacer(),

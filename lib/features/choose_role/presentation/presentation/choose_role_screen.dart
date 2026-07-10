@@ -43,9 +43,9 @@ class ChooseRoleScreen extends StatelessWidget {
             BlocConsumer<RoleBloc,RoleState>(listener: (context,state){
               if(state is RoleSuccess ){
                 if (state.role == "passenger") {
-                  Navigator.pushNamed(context, AppRoutes.passenger);
+                  Navigator.pushNamed(context, AppRoutes.passengerHome);
                 } else {
-                  Navigator.pushNamed(context, AppRoutes.rider);
+                  Navigator.pushNamed(context, AppRoutes.riderHome);
                 }
               }
               if(state is RoleFailure){

@@ -6,6 +6,7 @@ import 'package:bykea_skardu/features/auth/data/auth_repository.dart';
 import 'package:bykea_skardu/features/choose_role/presentation/bloc/role_bloc.dart';
 import 'package:bykea_skardu/features/onboarding/presentation/bloc/Onboarding_bloc.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passeger_bloc.dart';
+import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_bottom_nav/passenger_bottom_nav_bloc.dart';
 import 'package:bykea_skardu/features/rider/bloc/bottomNav/BottomNavBloc.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_bloc.dart';
 import 'package:bykea_skardu/features/splash/presentation/splash_screen.dart';
@@ -36,7 +37,8 @@ void main() async {
      BlocProvider(create:(_)=>RoleBloc(authRepository)),
      BlocProvider(create: (_)=>PassegerBloc()),
      BlocProvider(create: (_)=>RiderBloc()),
-     BlocProvider(create: (_)=>BottomNavBloc())
+     BlocProvider(create: (_)=>BottomNavBloc()),
+     BlocProvider(create: (_)=>PassengerBottomNavBloc())
    ], child: MyApp()));
 }
 

@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:bykea_skardu/features/auth/data/user_model.dart';
 import 'package:bykea_skardu/features/passenger/data/model/RideModel.dart';
 import 'package:bykea_skardu/features/passenger/data/model/StandModel.dart';
+import 'package:bykea_skardu/features/passenger/data/repository/rating_repository.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_event.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_state.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_state.dart';
@@ -20,6 +22,12 @@ class PassegerBloc extends Bloc<PassengerEvent, PassengerState> {
     on<ListenRideEvent>(_listRide);
     on<RideUpdatedEvent>(_rideUpdated);
     on<StandUpdatedEvent>(_standUpdated);
+    on<CancelRidePassengerEvent>(_cancelRide);
+    on<LoadPassengerBookingsEvent>(_loadPassengerBookings);
+    on<LoadPassengerEvent>(_loadPassenger);
+    on<SubmitRideRatingEvent>(_submitRating);
+    on<ChangeRatingEvent>(_changRating);
+    on<ResetRatingEvent>(_resetRating);
   }
 
   void _loadEvent(
@@ -56,6 +64,22 @@ class PassegerBloc extends Bloc<PassengerEvent, PassengerState> {
 
       add(StandUpdatedEvent(stands));
     });
+  }
+  void _cancelRide(CancelRidePassengerEvent event,Emitter<PassengerState> emit)async{
+    await FirebaseFirestore.instance
+        .collection('rides')
+        .doc(event.ride.rideId)   // ✅ Use rideId
+        .update({
+      'status': 'cancelled',
+    });
+
+    emit(
+      state.copyWith(
+        ride: event.ride.copyWith(
+          status: 'cancelled',
+        ),
+      ),
+    );
   }
 
   void _selectStand(SelectStandEvent event, Emitter<PassengerState> emit) {
@@ -162,4 +186,59 @@ class PassegerBloc extends Bloc<PassengerEvent, PassengerState> {
     _standSubscription?.cancel();
     return super.close();
   }
+  Future<void> _loadPassengerBookings(
+      LoadPassengerBookingsEvent event,
+      Emitter<PassengerState> emit,
+      ) async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    await emit.forEach(
+      FirebaseFirestore.instance
+          .collection('rides')
+          .where('passengerId', isEqualTo: uid)
+          .snapshots(),
+      onData: (snapshot) {
+        final rides = snapshot.docs
+            .map((e) => RideModel.fromMap(e.data()))
+            .toList();
+
+        rides.sort((a, b) => b.rideId.compareTo(a.rideId));
+
+        return state.copyWith(
+          bookings: rides,
+        );
+      },
+    );
+  }
+  void _loadPassenger(LoadPassengerEvent event,Emitter<PassengerState> emit) async{
+
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+
+    if (!doc.exists) return;
+
+    final passenger = UserModel.formMap(doc.data()!);
+    print("passenger:${passenger}");
+
+    emit(
+      state.copyWith(
+        passenger: passenger,
+      ),
+    );
+  }
+  void _submitRating(SubmitRideRatingEvent event,Emitter<PassengerState> emit) async{
+     await RatingRepository.submitRideRating(rideId: event.rideId, rating: event.rating, comment: event.comment);
+     emit(state.copyWith(ratingSubmitted: true));
+  }
+ void _changRating(ChangeRatingEvent event,Emitter<PassengerState> emit){
+     emit(state.copyWith(selectedRating: event.index));
+ }
+ void _resetRating(ResetRatingEvent event ,Emitter<PassengerState> emit){
+    emit(state.copyWith(selectedRating: 0,ratingSubmitted: false,ratingSubmitting: false));
+ }
+
 }

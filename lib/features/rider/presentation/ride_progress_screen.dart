@@ -1,3 +1,4 @@
+import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_event.dart' hide CancelRideEvent;
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_bloc.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_event.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_state.dart';
@@ -40,60 +41,128 @@ class _RideProgressScreenState extends State<RideProgressScreen> {
           );
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Ride Progress Screen"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              const Text(
-                "Contact Passenger",
+      child: SafeArea(
+        child: Scaffold(
+          body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+        
+            const SizedBox(height: 20),
+        
+            const Center(
+              child: Text(
+                "Ride In Progress",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.person),
+            ),
+        
+            const SizedBox(height: 8),
+        
+        
+        
+            const SizedBox(height: 35),
+        
+            const Text(
+              "From",
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+        
+            const SizedBox(height: 4),
+        
+            Text(
+              ride.pickupStand,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+        
+            const SizedBox(height: 25),
+        
+            const Text(
+              "To",
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+        
+            const SizedBox(height: 4),
+        
+            Text(
+              ride.distination,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+        
+            const SizedBox(height: 40),
+        
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(
+                    color: Colors.red,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                title: Text(passenger!.name),
-                subtitle: Text(passenger!.phone),
-                trailing: const Icon(Icons.call),
+                onPressed: () {
+                  context.read<RiderBloc>().add(
+                    CancelRideEvent(ride),
+                  );
+                },
+                child: const Text(
+                  "Cancel Ride",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-
-              const Divider(),
-
-              ListTile(
-                title: const Text("From"),
-                subtitle: Text(ride!.pickupStand),
+            ),
+        
+            const SizedBox(height: 15),
+        
+            /// Keep this only while testing.
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  context.read<RiderBloc>().add(
+                    CompleteRideEvent(ride),
+                  );
+                },
+                child: const Text(
+                  "Ride Completed",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
               ),
-
-              ListTile(
-                title: const Text("To"),
-                subtitle: Text(ride.distination),
-              ),
-
-              ListTile(
-                title: const Text("Fare"),
-                subtitle: Text("PKR ${ride.fare ?? '0'}"),
-              ),
-              ListTile(
-                title: const Text("status"),
-                subtitle: Text(" ${ride.status ?? ''}"),
-              ),
-              ElevatedButton(onPressed: (){
-                print("status:${state.ride?.status}");
-                context.read<RiderBloc>().add(CompleteRideEvent(ride));
-              }, child: Text("Ride Completed"))
-
-            ],
-          ),
+            ),
+          ],
+        ),
+            ),
         ),
       ),
     );

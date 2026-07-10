@@ -24,4 +24,10 @@ class FirebaseService {
 
     return UserModel.formMap(doc.data()!);
   }
+  static Future<void> submitRideRating({required String rideId,required int rating,required String comment}) async{
+   await FirebaseFirestore.instance.collection('rides').doc(rideId).update({
+     "passengerRating": rating,
+     "passengerComment": comment,
+   });
+  }
 }

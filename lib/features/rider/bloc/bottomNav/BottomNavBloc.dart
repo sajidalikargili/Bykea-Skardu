@@ -7,6 +7,7 @@ class BottomNavBloc extends Bloc<BottomNavEvent,BottomNavState> {
        on<SelectedIndexEvent>(_selectedIndex);
      }
      void _selectedIndex(SelectedIndexEvent event,Emitter<BottomNavState> emit){
+       print("selected Index:${event.selectedIndex}");
         emit(state.copyWith(event.selectedIndex));
      }
 }

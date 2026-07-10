@@ -1,6 +1,9 @@
 import 'package:bykea_skardu/core/route/app_routes.dart';
 import 'package:bykea_skardu/features/choose_role/presentation/presentation/choose_role_screen.dart';
-import 'package:bykea_skardu/features/choose_role/presentation/presentation/online_screen.dart';
+import 'package:bykea_skardu/features/passenger/presentation/screen/about_screen.dart';
+import 'package:bykea_skardu/features/passenger/presentation/screen/privacy_policy_screen.dart';
+import 'package:bykea_skardu/features/passenger/presentation/screen/terms_condition_screen.dart';
+import 'package:bykea_skardu/features/rider/presentation/online_screen.dart';
 import 'package:bykea_skardu/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:bykea_skardu/features/passenger/presentation/screen/booking_confirmed_screen.dart';
 import 'package:bykea_skardu/features/passenger/presentation/screen/confirm_booking_screen.dart';
@@ -8,7 +11,9 @@ import 'package:bykea_skardu/features/passenger/presentation/screen/distination_
 import 'package:bykea_skardu/features/passenger/presentation/screen/passenger_home_screen.dart';
 import 'package:bykea_skardu/features/passenger/presentation/screen/ride_detail_screen.dart';
 import 'package:bykea_skardu/features/rider/presentation/ride_completed_screen.dart';
+import 'package:bykea_skardu/features/rider/presentation/rider_bookings_screen.dart';
 import 'package:bykea_skardu/features/rider/presentation/rider_home_screen.dart';
+import 'package:bykea_skardu/features/rider/presentation/settings_screeen.dart';
 import 'package:bykea_skardu/features/splash/presentation/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +44,11 @@ Route<dynamic> generateRoute(RouteSettings setting){
       return MaterialPageRoute(builder: (contex){
         return ChooseRoleScreen();
       });
-    case AppRoutes.passenger:
+    case AppRoutes.passengerHome:
       return MaterialPageRoute(builder: (context){
         return PassengerHomeScreen();
       });
-    case AppRoutes.rider:
+    case AppRoutes.riderHome:
       return MaterialPageRoute(builder: (context){
         return RiderHomeScreen();
       });
@@ -78,6 +83,26 @@ Route<dynamic> generateRoute(RouteSettings setting){
     case AppRoutes.rideDetails:
       return MaterialPageRoute(builder: (context){
         return RideDetailsScreen();
+      });
+    case AppRoutes.settings:
+      return MaterialPageRoute(builder: (context){
+        return SettingsScreen();
+      });
+    case AppRoutes.privacyPolicy:
+      return MaterialPageRoute(builder: (context){
+        return PrivacyPolicyScreen();
+      });
+    case AppRoutes.termsAndCondition:
+      return  MaterialPageRoute(builder: (context){
+        return TermsConditionScreen();
+      });
+    case AppRoutes.aboutApp:
+      return MaterialPageRoute(builder: (context){
+        return AboutScreen();
+      });
+    case AppRoutes.bookings:
+      return MaterialPageRoute(builder: (context){
+        return RiderBookingsScreen();
       });
    default:
      return MaterialPageRoute(builder: (context){

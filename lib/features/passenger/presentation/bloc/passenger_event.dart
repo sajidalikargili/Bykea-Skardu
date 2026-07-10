@@ -32,8 +32,31 @@ class RideUpdatedEvent extends  PassengerEvent{
 class AcceptedRideEvent extends PassengerEvent{
 
 }
+class CancelRidePassengerEvent extends PassengerEvent{
+  RideModel ride;
+  CancelRidePassengerEvent(this.ride);
+}
 class StandUpdatedEvent extends PassengerEvent {
   final List<StandModel> stands;
 
   StandUpdatedEvent(this.stands);
+}
+class LoadPassengerBookingsEvent extends PassengerEvent {
+
+}
+class LoadPassengerEvent extends PassengerEvent{
+
+}
+class SubmitRideRatingEvent extends PassengerEvent{
+  final String rideId;
+  final int rating;
+  final String comment;
+  SubmitRideRatingEvent({required this.rideId,required this.rating,required this.comment});
+}
+class ChangeRatingEvent extends PassengerEvent{
+  final int index;
+  ChangeRatingEvent({required this.index});
+}
+class ResetRatingEvent extends PassengerEvent{
+
 }

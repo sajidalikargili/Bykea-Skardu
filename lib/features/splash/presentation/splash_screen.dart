@@ -1,10 +1,13 @@
 import 'package:bykea_skardu/core/constant/app_assets.dart';
 import 'package:bykea_skardu/core/route/app_routes.dart';
 import 'package:bykea_skardu/features/auth/data/user_model.dart';
+import 'package:bykea_skardu/features/rider/bloc/rider/rider_bloc.dart';
+import 'package:bykea_skardu/features/rider/bloc/rider/rider_event.dart';
 import 'package:bykea_skardu/features/splash/data/splash_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,11 +17,16 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    SplashService.navigate(context);
+    context.read<RiderBloc>().add(LoadRiderEvent());
+    // SplashService.navigate(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SplashService.navigate(context);
+    });
   }
 
   @override

@@ -32,7 +32,8 @@ class AcceptRideEvent extends RiderEvent{
 }
 
 class DeclineRideEvent extends RiderEvent{
-
+  RideModel ride;
+  DeclineRideEvent(this.ride);
 }
 class  StartRideEvent extends RiderEvent{
  final RideModel ride;
@@ -42,3 +43,25 @@ class CompleteRideEvent extends RiderEvent{
   final RideModel ride;
   CompleteRideEvent(this.ride);
 }
+class LoadEarningsEvent extends RiderEvent{
+
+}
+class CancelRideEvent extends RiderEvent{
+  final RideModel ride;
+  CancelRideEvent(this.ride);
+}
+class LoadRiderEvent extends RiderEvent{
+
+}
+class  ClearCurrentRideEvent extends RiderEvent{
+
+}
+class LoadRiderBookingsEvent extends RiderEvent{
+
+}
+class LoadRideRatingEvent extends RiderEvent {
+  final String rideId;
+
+  LoadRideRatingEvent(this.rideId);
+}
+

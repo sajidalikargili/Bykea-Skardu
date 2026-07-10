@@ -14,10 +14,19 @@ class OnlineScreen extends StatefulWidget {
 
 class _OnlineScreenState extends State<OnlineScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<RiderBloc>().add(
+      LoadRiderEvent(),
+    );
+  }
+  @override
   Widget build(BuildContext context) {
     final state=context.watch<RiderBloc>().state;
+    final rider=context.watch<RiderBloc>().state.rider;
     return Scaffold(
-      appBar: AppBar(title: Text('Online'),),
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -26,7 +35,11 @@ class _OnlineScreenState extends State<OnlineScreen> {
              Expanded(child: Column(
                children: [
                  Text("your online"),
-                 Text(state.selectStand ?? ""),
+                 Text(
+                   state.selectStand?.isNotEmpty == true
+                       ? state.selectStand!
+                       : rider?.stand ?? "",
+                 ),
                ],
              )),
               ElevatedButton(
@@ -35,16 +48,23 @@ class _OnlineScreenState extends State<OnlineScreen> {
                       .add(
                     GoOffLineEvent(),
                   );
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, AppRoutes.riderHome);
                 },
                 child: const Text(
                   'Go Offline',
                 ),
               ),
-              ElevatedButton(onPressed: (){
-                context.read<AuthBloc>().add(logOutEvent());
-                Navigator.pushNamed(context, AppRoutes.login);
-              }, child: Text("logout"))
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: (){
+
+                  Navigator.pushNamed(context, AppRoutes.riderHome);
+                },
+                child: const Text(
+                  'Back to home',
+                ),
+              ),
+
             ],
           ),
         ),

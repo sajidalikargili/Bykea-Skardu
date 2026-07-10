@@ -18,3 +18,9 @@ class AuthFailure extends AuthState{
   final String message;
   AuthFailure(this.message);
 }
+
+class AuthNeedRole extends AuthState {}
+
+class AuthPassenger extends AuthState {}
+
+class AuthRider extends AuthState {}

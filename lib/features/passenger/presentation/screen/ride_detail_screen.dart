@@ -1,5 +1,8 @@
+import 'package:bykea_skardu/core/route/app_routes.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passeger_bloc.dart';
+import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_event.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_state.dart';
+import 'package:bykea_skardu/features/passenger/presentation/screen/passenger_home_screen.dart';
 import 'package:bykea_skardu/features/passenger/presentation/screen/passenger_ride_complete_screen.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_bloc.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_state.dart';
@@ -26,7 +29,6 @@ class RideDetailsScreen extends StatelessWidget {
         }
     },
       child: Scaffold(
-        appBar: AppBar(title: const Text(" Passenger Ride Details")),
         body: BlocBuilder<PassegerBloc, PassengerState>(
           buildWhen: (previous, current) => previous.ride != current.ride,
           builder: (context, state) {
@@ -36,40 +38,289 @@ class RideDetailsScreen extends StatelessWidget {
             if (ride == null) {
               return const Center(child: CircularProgressIndicator());
             }
-            return Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [Text(ride?.status ?? "")],
-                ),
-                ListTile(
-                  title: Text(ride?.riderName ?? ""),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
 
-                  subtitle: Text(ride?.riderPhone ?? ""),
-                ),
-                const Divider(),
+                  /// Green Header
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(
+                      top: 40,
+                      left: 20,
+                      right: 20,
+                      bottom: 25,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
 
-                ListTile(
-                  title: const Text("From"),
-                  subtitle: Text(ride?.pickupStand ?? ""),
-                ),
+                        Text(
+                          "On The Way",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
 
-                ListTile(
-                  title: const Text("To"),
-                  subtitle: Text(ride?.distination ?? ""),
-                ),
+                        SizedBox(height: 6),
 
-                ListTile(
-                  title: const Text("Fare"),
-                  subtitle: Text("PKR ${ride?.fare ?? ""}"),
-                ),
+                        Text(
+                          "Your rider is on the way",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-                ListTile(
-                  title: const Text("Booking ID"),
-                  subtitle: Text(ride?.rideId ?? ""),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
 
-              ],
+                        /// Rider Card
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade200,
+                                blurRadius: 8,
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+
+                              const CircleAvatar(
+                                radius: 28,
+                                backgroundColor: Colors.green,
+                                child: Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                ),
+                              ),
+
+                              const SizedBox(width: 12),
+
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+
+                                    Text(
+                                      ride.riderName ?? "",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 4),
+
+                                    const Row(
+                                      children: [
+
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.orange,
+                                          size: 15,
+                                        ),
+
+                                        SizedBox(width: 3),
+
+                                        Text("4.8"),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 4),
+
+                                    const Text(
+                                      "Bike",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              CircleAvatar(
+                                backgroundColor:
+                                Colors.green.shade100,
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.call,
+                                    color: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    // Call Rider
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 25),
+
+                        /// From
+                        Row(
+                          children: [
+
+                            const Expanded(
+                              child: Text(
+                                "From",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                ride.pickupStand,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        /// To
+                        Row(
+                          children: [
+
+                            const Expanded(
+                              child: Text(
+                                "To",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                ride.distination,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        /// Fare
+                        Row(
+                          children: [
+
+                            const Expanded(
+                              child: Text(
+                                "Fare (Est.)",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                "PKR ${ride.fare}",
+                                textAlign: TextAlign.end,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+
+                        const SizedBox(height: 15),
+
+
+
+                        /// Cancel Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 55,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.red,
+                                width: 2,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.circular(14),
+                              ),
+                            ),
+                            onPressed: () {
+                              context.read<PassegerBloc>().add(
+                                CancelRidePassengerEvent(ride),
+                              );
+                            //  Navigator.pushNamed(context, AppRoutes.riderHome);
+                            },
+                            child: const Text(
+                              "Cancel Ride",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        if (ride.status == "cancelled") ...[
+                          const SizedBox(height: 15),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 55,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  AppRoutes.riderHome,
+                                      (route) => false,
+                                );
+                              },
+                              child: const Text("Back Home"),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),
