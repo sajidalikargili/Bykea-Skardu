@@ -60,3 +60,7 @@ class ChangeRatingEvent extends PassengerEvent{
 class ResetRatingEvent extends PassengerEvent{
 
 }
+class ConformBooKingEvent extends PassengerEvent{
+  RideModel ride;
+  ConformBooKingEvent(this.ride);
+}

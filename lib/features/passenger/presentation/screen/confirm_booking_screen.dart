@@ -1,4 +1,5 @@
 import 'package:bykea_skardu/core/route/app_routes.dart';
+import 'package:bykea_skardu/core/util/helper_method.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passeger_bloc.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_event.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_state.dart';
@@ -19,21 +20,20 @@ class _ConfirmBookingScreenState
   final TextEditingController noteController =
   TextEditingController();
   Future<void> _callRider(String phone) async {
-    final Uri uri = Uri(
-      scheme: 'tel',
-      path: phone,
-    );
+    final Uri uri = Uri.parse("tel:$phone");
 
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Cannot open dialer"),
-        ),
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
       );
+    } else {
+      debugPrint("Cannot launch: $uri");
+      HelperMethod.showMessage("Cannot  open dialer", context);
+
     }
   }
+
   @override
   void initState() {
     super.initState();
@@ -285,6 +285,7 @@ class _ConfirmBookingScreenState
                                   .shade100,
                               child: IconButton(
                                 onPressed: () {
+                                  print("phone calling conform:${ride.riderPhone!}");
                                   _callRider(ride.riderPhone!);
                                 },
                                 icon: const Icon(
@@ -347,6 +348,7 @@ class _ConfirmBookingScreenState
                               ),
                             ),
                             onPressed: () {
+                              context.read<PassegerBloc>().add(ConformBooKingEvent(ride));
                               Navigator.pushReplacementNamed(
                                 context,
                                 AppRoutes

@@ -23,192 +23,254 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              const SizedBox(height: 50),
-
-              const Text(
-                "Welcome Back",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+    child: LayoutBuilder(
+    builder: (context, constraints) {
+      return SingleChildScrollView(
+          keyboardDismissBehavior:
+          ScrollViewKeyboardDismissBehavior.onDrag,
+          child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
               ),
+              child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 50),
 
-              const Text("Login to your account"),
 
-              const SizedBox(height: 40),
 
-              TextField(
-                controller: phoneController,
-                decoration: InputDecoration(
-                  hintText: "Phone Number",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
+                          const Text(
 
-              const SizedBox(height: 16),
+                            "Welcome Back",
 
-              TextField(
-                controller: passwordController,
-                obscureText: hide,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      hide
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        hide = !hide;
-                      });
-                    },
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
+                            style: TextStyle(
 
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    HelperMethod.showMessage("Forget Password", context);
-                  },
-                  child: const Text("Forgot Password?"),
-                ),
-              ),
+                              fontSize: 28,
 
-              const SizedBox(height: 20),
-              BlocConsumer<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthSuccess) {
-                    phoneController.clear();
-                    passwordController.clear();
+                              fontWeight: FontWeight.bold,
 
-                    Navigator.pushReplacementNamed(
-                      context,
-                      AppRoutes.splash,
-                    );
-                  }
+                            ),
 
-                  if (state is AuthFailure) {
-                    HelperMethod.showMessage(
-                      state.message,
-                      context,
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      onPressed: state is AuthLoading
-                          ? null
-                          : () {
-                        context.read<AuthBloc>().add(
-                          LoginEvent(
-                            phoneController.text.trim(),
-                            passwordController.text.trim(),
                           ),
-                        );
-                      },
-                      child: state is AuthLoading
-                          ? const CircularProgressIndicator()
-                          : const Text("Login"),
-                    ),
-                  );
-                },
+
+
+
+                          const Text("Login to your account"),
+
+
+
+                          const SizedBox(height: 40),
+
+
+
+                          TextField(
+
+                            controller: phoneController,
+
+                            decoration: InputDecoration(
+
+                              hintText: "Phone Number",
+
+                              border: OutlineInputBorder(
+
+                                borderRadius: BorderRadius.circular(12),
+
+                              ),
+
+                            ),
+
+                          ),
+
+
+
+                          const SizedBox(height: 16),
+
+
+
+                          TextField(
+
+                            controller: passwordController,
+
+                            obscureText: hide,
+
+                            decoration: InputDecoration(
+
+                              hintText: "Password",
+
+                              suffixIcon: IconButton(
+
+                                icon: Icon(
+
+                                  hide
+
+                                      ? Icons.visibility_off
+
+                                      : Icons.visibility,
+
+                                ),
+
+                                onPressed: () {
+
+                                  setState(() {
+
+                                    hide = !hide;
+
+                                  });
+
+                                },
+
+                              ),
+
+                              border: OutlineInputBorder(
+
+                                borderRadius: BorderRadius.circular(12),
+
+                              ),
+
+                            ),
+
+                          ),
+
+
+
+                          Align(
+
+                            alignment: Alignment.centerRight,
+
+                            child: TextButton(
+
+                              onPressed: () {
+
+                                HelperMethod.showMessage("Forget Password", context);
+
+                              },
+
+                              child: const Text("Forgot Password?"),
+
+                            ),
+
+                          ),
+
+
+
+                          const SizedBox(height: 20),
+
+                          BlocConsumer<AuthBloc, AuthState>(
+
+                            listener: (context, state) {
+
+                              if (state is AuthSuccess) {
+
+                                phoneController.clear();
+
+                                passwordController.clear();
+
+
+
+                                Navigator.pushReplacementNamed(
+
+                                  context,
+
+                                  AppRoutes.splash,
+
+                                );
+
+                              }
+
+
+
+                              if (state is AuthFailure) {
+
+                                HelperMethod.showMessage(
+
+                                  state.message,
+
+                                  context,
+
+                                );
+
+                              }
+
+                            },
+
+                            builder: (context, state) {
+
+                              return SizedBox(
+
+                                width: double.infinity,
+
+                                height: 55,
+
+                                child: ElevatedButton(
+
+                                  onPressed: state is AuthLoading
+
+                                      ? null
+
+                                      : () {
+
+                                    context.read<AuthBloc>().add(
+
+                                      LoginEvent(
+
+                                        phoneController.text.trim(),
+
+                                        passwordController.text.trim(),
+
+                                      ),
+
+                                    );
+
+                                  },
+
+                                  child: state is AuthLoading
+
+                                      ? const CircularProgressIndicator()
+
+                                      : const Text("Login"),
+
+                                ),
+
+                              );
+
+                            },
+
+                          ),
+
+
+
+                          const Spacer(),
+
+                          Center(child: Text("Don't have an account?")),
+
+                          Center(
+
+                            child: TextButton(
+
+                              onPressed: () {
+
+
+
+                                Navigator.pushNamed(context,AppRoutes.register);
+
+                              },
+
+                              child: const Text("Register"),
+
+                            ),
+
+                          )
+                        ],
+                      ),
+                  ),
               ),
-              // BlocConsumer<AuthBloc, AuthState>(
-              //   listener: (context, state) {
-              //     if (state is AuthSuccess) {
-              //       phoneController.clear();
-              //       passwordController.clear();
-              //
-              //       Navigator.pushReplacementNamed(
-              //         context,
-              //         AppRoutes.splash,
-              //       );
-              //     }
-              //
-              //     if (state is AuthFailure) {
-              //       HelperMethod.showMessage(
-              //         state.message,
-              //         context,
-              //       );
-              //     }
-              //   },
-              //   builder: (context, state) {
-              //     return SizedBox(
-              //       width: double.infinity,
-              //       height: 55,
-              //       child: ElevatedButton(
-              //         onPressed: state is AuthLoading
-              //             ? null
-              //             : () {
-              //           context.read<AuthBloc>().add(
-              //             LoginEvent(
-              //               phoneController.text.trim(),
-              //               passwordController.text.trim(),
-              //             ),
-              //           );
-              //         },
-              //         child: state is AuthLoading
-              //             ? const CircularProgressIndicator()
-              //             : const Text("Login"),
-              //       ),
-              //     );
-              //   },
-              // ),
-             // BlocConsumer<AuthBloc,AuthState>( listener: (context,state){
-             //   if(state is AuthSuccess){
-             //     phoneController.clear();
-             //     passwordController.clear();
-             //     Navigator.pushNamed(context, AppRoutes.chooseRole);
-             //   }
-             //  if(state is AuthFailure){
-             //    HelperMethod.showMessage(state.message, context);
-             //  }
-             // },builder: (context,state){
-             //   return  SizedBox(
-             //     width: double.infinity,
-             //     height: 55,
-             //     child: ElevatedButton(
-             //       onPressed: state is AuthLoading ? null :() {
-             //         context.read<AuthBloc>().add(LoginEvent(phoneController.text.trim(), passwordController.text.trim()));
-             //       },
-             //       child:state is AuthLoading ? const CircularProgressIndicator() : const Text("Login"),
-             //     ),
-             //   );
-             // },),
-
-
-              const Spacer(),
-             Center(child: Text("Don't have an account?")),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-
-                    Navigator.pushNamed(context,AppRoutes.register);
-                  },
-                  child: const Text("Register"),
-                ),
-              )
-            ],
           ),
-        ),
-      ),
+      );
+    },
+    ),
+    ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bykea_skardu/features/auth/data/user_model.dart';
 import 'package:bykea_skardu/features/passenger/data/model/RideModel.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_event.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 class RiderBloc extends Bloc<RiderEvent,RiderState> {
+  StreamSubscription<DocumentSnapshot>? _rideSubscription;
       RiderBloc(): super(RiderState()){
         on<SelectStandEvent>(_selectStand);
         on<GoOnlineEvent>(_goOnline);
@@ -24,6 +26,8 @@ class RiderBloc extends Bloc<RiderEvent,RiderState> {
         on<ClearCurrentRideEvent>(_clearCurrentRide);
         on<LoadRiderBookingsEvent>(_loadRiderBookings);
         on<LoadRideRatingEvent>(_loadRideRating);
+        on<ListenCurrentRideEvent>(_listenCurrentRide);
+        on<RideUpdatedEvent>(_rideUpdated);
 
       }
       void _selectStand(SelectStandEvent event,Emitter<RiderState> emit){
@@ -124,7 +128,7 @@ class RiderBloc extends Bloc<RiderEvent,RiderState> {
           'riderId': FirebaseAuth.instance.currentUser!.uid,
           'riderName':rider.name,
           'riderPhone':rider.phone,
-          'fare':'200',
+          'fare':event.fare,
           'status': 'accepted',
 
         });
@@ -175,13 +179,13 @@ class RiderBloc extends Bloc<RiderEvent,RiderState> {
        'status': 'ongoing',
      });
 
-     emit(
-       state.copyWith(
-         ride: event.ride.copyWith(
-           status: 'ongoing',
-         ),
-       ),
-     );
+     // emit(
+     //   state.copyWith(
+     //     ride: event.ride.copyWith(
+     //       status: 'ongoing',
+     //     ),
+     //   ),
+     // );
    }
    void _completeRide(CompleteRideEvent event, Emitter<RiderState> emit) async{
      await FirebaseFirestore.instance
@@ -335,4 +339,48 @@ class RiderBloc extends Bloc<RiderEvent,RiderState> {
           debugPrint(stackTrace.toString());
         }
       }
+      Future<void> _listenCurrentRide(
+          ListenCurrentRideEvent event,
+          Emitter<RiderState> emit,
+          ) async {
+        print("ListenCurrentRideEvent called");
+        final rideId = state.ride?.rideId;
+
+        if (rideId == null) return;
+
+        await _rideSubscription?.cancel();
+
+        _rideSubscription = FirebaseFirestore.instance
+            .collection("rides")
+            .doc(rideId)
+            .snapshots()
+            .listen((snapshot) {
+          print("Firestore snapshot received");
+          if (!snapshot.exists) return;
+          final ride = RideModel.fromMap(
+            snapshot.data()!,
+          );
+          add(RideUpdatedEvent(ride));
+        });
+      }
+      void _rideUpdated(RideUpdatedEvent event,Emitter<RiderState> emit){
+        print("Old Status : ${state.ride?.status}");
+        print("New Status : ${event.ride.status}");
+
+        if (state.ride == event.ride) {
+          print("Same ride -> Don't emit");
+          return;
+        }
+        print("Different ride -> Emit");
+        emit(
+          state.copyWith(
+            ride: event.ride,
+          ),
+        );
+      }
+  @override
+  Future<void> close() async {
+    await _rideSubscription?.cancel();
+    return super.close();
+  }
 }

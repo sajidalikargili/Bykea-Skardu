@@ -7,6 +7,7 @@ import 'package:bykea_skardu/features/passenger/presentation/screen/passenger_ri
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BookingConfirmedScreen extends StatefulWidget {
   const BookingConfirmedScreen({super.key});
@@ -29,7 +30,18 @@ class _BookingConfirmedScreenState
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _callRider(String phone) async {
+      final Uri uri = Uri.parse("tel:$phone");
 
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        debugPrint("Cannot launch: $uri");
+      }
+    }
     return BlocListener<
         PassegerBloc,
         PassengerState>(
@@ -206,7 +218,7 @@ class _BookingConfirmedScreenState
                           Colors.green.shade100,
                           child: IconButton(
                             onPressed: () {
-                              // Call Rider
+                             _callRider(ride.riderPhone!);
                             },
                             icon: const Icon(
                               Icons.call,

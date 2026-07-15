@@ -11,6 +11,7 @@ import 'package:bykea_skardu/features/passenger/presentation/screen/distination_
 import 'package:bykea_skardu/features/passenger/presentation/screen/passenger_home_screen.dart';
 import 'package:bykea_skardu/features/passenger/presentation/screen/ride_detail_screen.dart';
 import 'package:bykea_skardu/features/rider/presentation/ride_completed_screen.dart';
+import 'package:bykea_skardu/features/rider/presentation/ride_progress_screen.dart';
 import 'package:bykea_skardu/features/rider/presentation/rider_bookings_screen.dart';
 import 'package:bykea_skardu/features/rider/presentation/rider_home_screen.dart';
 import 'package:bykea_skardu/features/rider/presentation/settings_screeen.dart';
@@ -100,9 +101,17 @@ Route<dynamic> generateRoute(RouteSettings setting){
       return MaterialPageRoute(builder: (context){
         return AboutScreen();
       });
+    case  AppRoutes.rideProgress:
+      return MaterialPageRoute(builder: (context){
+        return  RideProgressScreen();
+      });
     case AppRoutes.bookings:
       return MaterialPageRoute(builder: (context){
         return RiderBookingsScreen();
+      });
+    case AppRoutes.rideCompleted:
+      return MaterialPageRoute(builder: (context){
+        return RideCompletedScreen();
       });
    default:
      return MaterialPageRoute(builder: (context){

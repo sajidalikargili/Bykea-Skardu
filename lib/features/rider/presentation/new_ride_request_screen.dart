@@ -32,7 +32,13 @@ class _NewRideRequestScreenState
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController fareController = TextEditingController();
 
+    @override
+    void dispose() {
+      fareController.dispose();
+      super.dispose();
+    }
     return BlocListener<RiderBloc, RiderState>(
       listener: (context, state) {
 
@@ -269,21 +275,43 @@ class _NewRideRequestScreenState
                                   .spaceBetween,
                               children: [
 
-                                const Text(
-                                  "Fare (Est.)",
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Ride Fare",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
 
-                                Text(
-                                  "PKR ${ride.fare ?? "200"}",
-                                  style:
-                                  const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight:
-                                    FontWeight
-                                        .bold,
+                                const SizedBox(height: 12,width: 10,),
+
+                                Expanded(
+                                  child: TextField(
+                                    controller: fareController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      hintText: "Enter Fare (PKR)",
+                                      prefixIcon: const Icon(
+                                        Icons.currency_rupee,
+                                        color:Colors.green,
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.grey.shade100,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: const BorderSide(
+                                          color:Colors.green,
+                                          width: 2,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -336,38 +364,36 @@ class _NewRideRequestScreenState
 
                                 Expanded(
                                   child: ElevatedButton(
-                                    style:
-                                    ElevatedButton
-                                        .styleFrom(
-                                      backgroundColor:
-                                      Colors.green,
-                                      shape:
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                            10),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-
                                     onPressed: () {
 
-                                      context
-                                          .read<
-                                          RiderBloc>()
-                                          .add(
+                                      if (fareController.text.trim().isEmpty) {
+
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Please enter ride fare."),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+
+                                        return;
+                                      }
+
+                                      context.read<RiderBloc>().add(
                                         AcceptRideEvent(
-                                            ride),
+                                          ride,
+                                          fareController.text.trim(),
+                                        ),
                                       );
                                     },
-
                                     child: const Text(
                                       "Accept",
-                                      style:
-                                      TextStyle(
-                                        color: Colors
-                                            .white,
-                                      ),
+                                      style: TextStyle(color: Colors.white),
                                     ),
                                   ),
                                 ),

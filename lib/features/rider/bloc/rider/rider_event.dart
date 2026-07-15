@@ -25,7 +25,8 @@ class LoadRideRequestsEvent extends RiderEvent{
 }
 class AcceptRideEvent extends RiderEvent{
  RideModel ride;
- AcceptRideEvent(this.ride);
+ final String fare;
+ AcceptRideEvent(this.ride,this.fare);
  @override
   // TODO: implement props
   List<Object?> get props => [ride];
@@ -63,5 +64,13 @@ class LoadRideRatingEvent extends RiderEvent {
   final String rideId;
 
   LoadRideRatingEvent(this.rideId);
+}
+class ListenCurrentRideEvent extends RiderEvent {
+
+}
+class RideUpdatedEvent extends RiderEvent {
+  final RideModel ride;
+
+  RideUpdatedEvent(this.ride);
 }
 

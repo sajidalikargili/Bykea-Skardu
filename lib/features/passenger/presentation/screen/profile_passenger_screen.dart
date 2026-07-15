@@ -1,6 +1,9 @@
 import 'package:bykea_skardu/core/route/app_routes.dart';
 import 'package:bykea_skardu/features/auth/bloc/auth_bloc.dart';
 import 'package:bykea_skardu/features/auth/bloc/auth_event.dart';
+import 'package:bykea_skardu/features/passenger/presentation/bloc/passeger_bloc.dart';
+import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_event.dart';
+import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_state.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_bloc.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_event.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_state.dart';
@@ -15,24 +18,23 @@ class ProfilePassengerScreen extends StatefulWidget {
 }
 
 class _ProfilePassengerScreenState extends State<ProfilePassengerScreen> {
-  @override
+
+ @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-
-    context.read<RiderBloc>().add(LoadRiderEvent());
-    context.read<RiderBloc>().add(LoadEarningsEvent());
+    context.read<PassegerBloc>().add(LoadPassengerEvent());
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
-        child: BlocBuilder<RiderBloc, RiderState>(
+        child: BlocBuilder<PassegerBloc, PassengerState>(
           builder: (context, state) {
-            final rider = state.rider;
+            final passenger = state.passenger;
 
-            if (rider == null) {
+            if (passenger == null) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
@@ -68,7 +70,7 @@ class _ProfilePassengerScreenState extends State<ProfilePassengerScreen> {
                       children: [
 
                         const Text(
-                          "Rider Profile",
+                          "Passenger Profile",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -91,7 +93,7 @@ class _ProfilePassengerScreenState extends State<ProfilePassengerScreen> {
                         const SizedBox(height: 15),
 
                         Text(
-                          rider.name,
+                          passenger.name,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 24,
@@ -102,7 +104,7 @@ class _ProfilePassengerScreenState extends State<ProfilePassengerScreen> {
                         const SizedBox(height: 6),
 
                         Text(
-                          rider.phone,
+                          passenger.phone,
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 16,
@@ -127,33 +129,16 @@ class _ProfilePassengerScreenState extends State<ProfilePassengerScreen> {
                               Icon(
                                 Icons.circle,
                                 size: 12,
-                                color: state.isOnline
-                                    ? Colors.green
-                                    : Colors.red,
-                              ),
+                                color: Colors.green),
 
                               const SizedBox(width: 8),
 
-                              Text(
-                                state.isOnline
-                                    ? "Online"
-                                    : "Offline",
-                                style: const TextStyle(
+                              Text("Online", style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
 
-                              if (state.selectStand != null) ...[
-                                const SizedBox(width: 12),
-                                const Text("|"),
-                                const SizedBox(width: 12),
-                                Text(
-                                  state.selectStand!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ]
+
                             ],
                           ),
                         ),
@@ -166,35 +151,6 @@ class _ProfilePassengerScreenState extends State<ProfilePassengerScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Column(
                       children: [
-
-                        ///================ STATISTICS =================
-                        Row(
-                          children: [
-
-                            Expanded(
-                              child: _statCard(
-                                title: "Completed",
-                                value:
-                                state.completedRides.toString(),
-                                icon: Icons.check_circle,
-                                color: Colors.green,
-                              ),
-                            ),
-
-                            const SizedBox(width: 15),
-
-                            Expanded(
-                              child: _statCard(
-                                title: "Earnings",
-                                value:
-                                "PKR ${state.totalEarnings.toStringAsFixed(0)}",
-                                icon: Icons.payments,
-                                color: Colors.orange,
-                              ),
-                            ),
-                          ],
-                        ),
-
                         const SizedBox(height: 25),
 
                         _menuTile(
@@ -261,6 +217,7 @@ class _ProfilePassengerScreenState extends State<ProfilePassengerScreen> {
                       ],
                     ),
                   ),
+
                 ],
               ),
             );

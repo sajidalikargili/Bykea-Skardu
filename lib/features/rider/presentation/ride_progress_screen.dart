@@ -1,3 +1,5 @@
+import 'package:bykea_skardu/core/route/app_routes.dart';
+import 'package:bykea_skardu/core/util/helper_method.dart';
 import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_event.dart' hide CancelRideEvent;
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_bloc.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_event.dart';
@@ -15,7 +17,18 @@ class RideProgressScreen extends StatefulWidget {
 
 class _RideProgressScreenState extends State<RideProgressScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    print("RideProgressScreen initState");
+    context.read<RiderBloc>().add(
+      ListenCurrentRideEvent(),
+    );
+  }
+  @override
   Widget build(BuildContext context) {
+    print("RideProgressScreen rebuilt");
     final state = context
         .watch<RiderBloc>()
         .state;
@@ -30,15 +43,36 @@ class _RideProgressScreenState extends State<RideProgressScreen> {
       );
     }
     return BlocListener<RiderBloc, RiderState>(
+
+      listenWhen: (previous, current) {
+        return previous.ride?.status != current.ride?.status;
+      },
       listener: (context, state) {
+
         print("status:${state.ride?.status}");
+        if (state.ride == null) return;
         if (state.ride?.status == 'completed') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const RideCompletedScreen(),
+          Navigator.pushNamedAndRemoveUntil(context,AppRoutes.rideCompleted, (route)=>false);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (_) => const RideCompletedScreen(),
+          //   ),
+          // );
+        }
+        if(state.ride?.status=="cancelled"){
+          context.read<RiderBloc>().add(ClearCurrentRideEvent());
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Passenger cancelled the ride"),
             ),
           );
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.riderHome,
+                (route) => false,
+          );
+         // Navigator.popUntil(context, ModalRoute.withName(AppRoutes.riderHome),);
         }
       },
       child: SafeArea(
@@ -118,6 +152,7 @@ class _RideProgressScreenState extends State<RideProgressScreen> {
                   ),
                 ),
                 onPressed: () {
+                  HelperMethod.showMessage("cacnel ride", context);
                   context.read<RiderBloc>().add(
                     CancelRideEvent(ride),
                   );
@@ -134,7 +169,7 @@ class _RideProgressScreenState extends State<RideProgressScreen> {
             ),
         
             const SizedBox(height: 15),
-        
+
             /// Keep this only while testing.
             SizedBox(
               width: double.infinity,

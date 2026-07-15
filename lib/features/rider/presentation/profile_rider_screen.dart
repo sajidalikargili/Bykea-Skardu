@@ -27,245 +27,243 @@ class _ProfileRiderScreenState extends State<ProfileRiderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey.shade100,
-        body: SafeArea(
-            child: BlocBuilder<RiderBloc, RiderState>(
-                builder: (context, state) {
-                  final rider = state.rider;
+        body: BlocBuilder<RiderBloc, RiderState>(
+            builder: (context, state) {
+              final rider = state.rider;
 
-                  if (rider == null) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+              if (rider == null) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
 
-                      ///================ HEADER =================
-                      Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(
-                        top: 35,
-                        bottom: 30,
-                      ),
-                      decoration: const BoxDecoration(
-                        // gradient: LinearGradient(
-                        //   colors: [
-                        //     Color(0xff0E9F6E),
-                        //     Color(0xff34D399),
-                        //   ],
-                        //   begin: Alignment.topLeft,
-                        //   end: Alignment.bottomRight,
-                        // ),
-                        color: Colors.green,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(35),
-                          bottomRight: Radius.circular(35),
+                  ///================ HEADER =================
+                  Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(
+                    top: 35,
+                    bottom: 30,
+                  ),
+                  decoration: const BoxDecoration(
+                    // gradient: LinearGradient(
+                    //   colors: [
+                    //     Color(0xff0E9F6E),
+                    //     Color(0xff34D399),
+                    //   ],
+                    //   begin: Alignment.topLeft,
+                    //   end: Alignment.bottomRight,
+                    // ),
+                    color: Colors.green,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(35),
+                      bottomRight: Radius.circular(35),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                     SizedBox(height: 15),
+                      const Text(
+                        "Rider Profile",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
                         ),
                       ),
+
+                      const SizedBox(height: 25),
+
+                      CircleAvatar(
+                        radius: 52,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.green.shade700,
+                          size: 60,
+                        ),
+                      ),
+
+                      const SizedBox(height: 15),
+
+                      Text(
+                        rider.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      Text(
+                        rider.phone,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+
+                            Icon(
+                              Icons.circle,
+                              size: 12,
+                              color: state.isOnline
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+
+                            const SizedBox(width: 8),
+
+                            Text(
+                              state.isOnline
+                                  ? "Online"
+                                  : "Offline",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            if (state.selectStand != null) ...[
+                              const SizedBox(width: 12),
+                              const Text("|"),
+                              const SizedBox(width: 12),
+                              Text(
+                                state.selectStand!,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ]
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: Column(
                         children: [
 
-                          const Text(
-                            "Rider Profile",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
+                          ///================ STATISTICS =================
+                          Row(
+                            children: [
+
+                              Expanded(
+                                child: _statCard(
+                                  title: "Completed",
+                                  value:
+                                  state.completedRides.toString(),
+                                  icon: Icons.check_circle,
+                                  color: Colors.green,
+                                ),
+                              ),
+
+                              const SizedBox(width: 15),
+
+                              Expanded(
+                                child: _statCard(
+                                  title: "Earnings",
+                                  value:
+                                  "PKR ${state.totalEarnings.toStringAsFixed(0)}",
+                                  icon: Icons.payments,
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            ],
                           ),
 
                           const SizedBox(height: 25),
 
-                          CircleAvatar(
-                            radius: 52,
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.green.shade700,
-                              size: 60,
-                            ),
+                          _menuTile(
+                            icon: Icons.history,
+                            title: "My Bookings",
+                            color: Colors.blue,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.bookings,
+                              );
+                            },
                           ),
 
                           const SizedBox(height: 15),
 
-                          Text(
-                            rider.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          _menuTile(
+                            icon: Icons.settings,
+                            title: "Settings",
+                            color: Colors.orange,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.settings,
+                              );
+                            },
                           ),
 
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 15),
 
-                          Text(
-                            rider.phone,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 16,
-                            ),
+                          _menuTile(
+                            icon: Icons.info_outline,
+                            title: "About Application",
+                            color: Colors.purple,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.aboutApp,
+                              );
+                            },
                           ),
 
-                          const SizedBox(height: 18),
+                          const SizedBox(height: 15),
 
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
+                          _menuTile(
+                            icon: Icons.logout,
+                            title: "Logout",
+                            color: Colors.red,
+                            onTap: () {
 
-                                Icon(
-                                  Icons.circle,
-                                  size: 12,
-                                  color: state.isOnline
-                                      ? Colors.green
-                                      : Colors.red,
-                                ),
+                              context.read<AuthBloc>().add(
+                                logOutEvent(),
+                              );
 
-                                const SizedBox(width: 8),
-
-                                Text(
-                                  state.isOnline
-                                      ? "Online"
-                                      : "Offline",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-
-                                if (state.selectStand != null) ...[
-                                  const SizedBox(width: 12),
-                                  const Text("|"),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    state.selectStand!,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ]
-                              ],
-                            ),
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                AppRoutes.login,
+                                    (route) => false,
+                              );
+                            },
                           ),
+
+                          const SizedBox(height: 30),
                         ],
                       ),
                     ),
-
-                    const SizedBox(height: 22),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          child: Column(
-                            children: [
-
-                              ///================ STATISTICS =================
-                              Row(
-                                children: [
-
-                                  Expanded(
-                                    child: _statCard(
-                                      title: "Completed",
-                                      value:
-                                      state.completedRides.toString(),
-                                      icon: Icons.check_circle,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 15),
-
-                                  Expanded(
-                                    child: _statCard(
-                                      title: "Earnings",
-                                      value:
-                                      "PKR ${state.totalEarnings.toStringAsFixed(0)}",
-                                      icon: Icons.payments,
-                                      color: Colors.orange,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              const SizedBox(height: 25),
-
-                              _menuTile(
-                                icon: Icons.history,
-                                title: "My Bookings",
-                                color: Colors.blue,
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.bookings,
-                                  );
-                                },
-                              ),
-
-                              const SizedBox(height: 15),
-
-                              _menuTile(
-                                icon: Icons.settings,
-                                title: "Settings",
-                                color: Colors.orange,
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.settings,
-                                  );
-                                },
-                              ),
-
-                              const SizedBox(height: 15),
-
-                              _menuTile(
-                                icon: Icons.info_outline,
-                                title: "About Application",
-                                color: Colors.purple,
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.aboutApp,
-                                  );
-                                },
-                              ),
-
-                              const SizedBox(height: 15),
-
-                              _menuTile(
-                                icon: Icons.logout,
-                                title: "Logout",
-                                color: Colors.red,
-                                onTap: () {
-
-                                  context.read<AuthBloc>().add(
-                                    logOutEvent(),
-                                  );
-
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    AppRoutes.login,
-                                        (route) => false,
-                                  );
-                                },
-                              ),
-
-                              const SizedBox(height: 30),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-            ),
+                  ],
+                ),
+              );
+            },
         ),
     );
   }

@@ -21,94 +21,153 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: AppBar(
-        title: const Text("Settings"),
-      ),
-
-      body: ListView(
-
+      appBar: AppBar(title:  Text(
+        "Settings",
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
+      ),),
+      backgroundColor: Colors.grey.shade100,
+      body: Column(
         children: [
 
-          BlocBuilder<ThemeBloc, ThemeState>(
-            builder: (context, state) {
-              return SwitchListTile(
-                secondary: const Icon(Icons.dark_mode),
-                title: const Text("Dark Mode"),
-                subtitle: const Text("Enable Dark Theme"),
-                value: state.themeMode == ThemeMode.dark,
-                onChanged: (_) {
-                  context.read<ThemeBloc>().add(
-                    ThemeToggleEvent(),
-                  );
-                },
-              );
-            },
+          const SizedBox(height: 20),
+
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              children: [
+
+                BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, state) {
+                    return _settingTile(
+                      icon: Icons.dark_mode,
+                      title: "Dark Mode",
+                      subtitle: "Enable dark theme",
+                      trailing: Switch(
+                        value: state.themeMode == ThemeMode.dark,
+                        activeColor: Colors.green,
+                        onChanged: (_) {
+                          context.read<ThemeBloc>().add(
+                            ThemeToggleEvent(),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 15),
+
+                _settingTile(
+                  icon: Icons.language,
+                  title: "Language",
+                  subtitle: "English",
+                  onTap: () {},
+                ),
+
+                const SizedBox(height: 15),
+
+                _settingTile(
+                  icon: Icons.privacy_tip,
+                  title: "Privacy Policy",
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.privacyPolicy,
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 15),
+
+                _settingTile(
+                  icon: Icons.article,
+                  title: "Terms & Conditions",
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.termsAndCondition,
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 15),
+
+                _settingTile(
+                  icon: Icons.info,
+                  title: "About App",
+                  subtitle: "Version 1.0.0",
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.aboutApp,
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 15),
+
+                _settingTile(
+                  icon: Icons.share,
+                  title: "Share App",
+                  onTap: () {
+                    Share.share(
+                      "Download Bykea Skardu and book your ride easily!\nhttps://play.google.com/store/apps/details?id=com.example.bykea_skardu",
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
-
-          const Divider(),
-
-
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text("Language"),
-            subtitle: const Text("English"),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-
-            },
-          ),
-
-          const Divider(),
-
-          ListTile(
-            leading: const Icon(Icons.privacy_tip),
-            title: const Text("Privacy Policy"),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-               Navigator.pushNamed(context, AppRoutes.privacyPolicy);
-            },
-          ),
-
-          const Divider(),
-
-          ListTile(
-            leading: const Icon(Icons.article),
-            title: const Text("Terms & Conditions"),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              Navigator.pushNamed(context,AppRoutes.termsAndCondition);
-            },
-          ),
-
-          const Divider(),
-
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text("About App"),
-            subtitle: const Text("Version 1.0.0"),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-               Navigator.pushNamed(context, AppRoutes.aboutApp);
-
-            },
-          ),
-
-          const Divider(),
-
-          ListTile(
-            leading: const Icon(Icons.share),
-            title: const Text("Share App"),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              Share.share(
-                "Download Bykea Skardu and book your ride easily!\nhttps://play.google.com/store/apps/details?id=com.example.bykea_skardu",
-              );
-            },
-          ),
-
         ],
       ),
     );
   }
+}
+Widget _settingTile({
+  required IconData icon,
+  required String title,
+  String? subtitle,
+  Widget? trailing,
+  VoidCallback? onTap,
+}) {
+  return Material(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(18),
+    elevation: 2,
+    shadowColor: Colors.black12,
+    child: ListTile(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      leading: CircleAvatar(
+        radius: 22,
+        backgroundColor:  Colors.green.withOpacity(.12),
+        child: Icon(
+          icon,
+          color:  Colors.green,
+        ),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: trailing ??
+          const Icon(
+            Icons.arrow_forward_ios,
+            size: 18,
+            color: Colors.grey,
+          ),
+      onTap: onTap,
+    ),
+  );
 }

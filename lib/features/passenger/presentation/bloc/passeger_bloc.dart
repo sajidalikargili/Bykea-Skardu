@@ -28,6 +28,7 @@ class PassegerBloc extends Bloc<PassengerEvent, PassengerState> {
     on<SubmitRideRatingEvent>(_submitRating);
     on<ChangeRatingEvent>(_changRating);
     on<ResetRatingEvent>(_resetRating);
+    on<ConformBooKingEvent>(_conformBooking);
   }
 
   void _loadEvent(
@@ -239,6 +240,22 @@ class PassegerBloc extends Bloc<PassengerEvent, PassengerState> {
  }
  void _resetRating(ResetRatingEvent event ,Emitter<PassengerState> emit){
     emit(state.copyWith(selectedRating: 0,ratingSubmitted: false,ratingSubmitting: false));
+ }
+ void _conformBooking(ConformBooKingEvent event,Emitter<PassengerState> emit) async{
+   await FirebaseFirestore.instance
+       .collection('rides')
+       .doc(event.ride.rideId)   // ✅ Use rideId
+       .update({
+     'status': 'conform Booking',
+   });
+
+   emit(
+     state.copyWith(
+       ride: event.ride.copyWith(
+         status: 'conform Booking',
+       ),
+     ),
+   );
  }
 
 }

@@ -34,71 +34,132 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-                Text(
-                  "BYKEA",
-                  style: TextStyle(
-                    fontSize: 42,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green.shade700,
-                    letterSpacing: 1,
-                  ),
-                ),
+        child: LayoutBuilder(builder: (context,constraints){
+      return SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: ConstrainedBox(constraints: BoxConstraints(
+          minHeight: constraints.maxHeight,
+        ),  child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: IntrinsicHeight(
+                child: Column(
+          children: [
+       const Spacer(),
 
-                const SizedBox(height: 4),
+    Text(
 
-                const Text(
-                  "Skardu",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Image.asset(AppAssets.bgOne, height: 220),
-                const SizedBox(height: 40),
-                const Text(
-                  "Safe Rides, Anytime",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "Anywhere",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 50),
+      "BYKEA",
 
-                SizedBox(
-                  width: 35,
-                  height: 35,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    color: Colors.green,
-                  ),
-                ),
+      style: TextStyle(
 
-                const Spacer(),
-              ],
+        fontSize: 42,
+
+        fontWeight: FontWeight.bold,
+
+        color: Colors.green.shade700,
+
+        letterSpacing: 1,
+
+      ),
+
+    ),
+
+
+
+    const SizedBox(height: 4),
+
+
+
+    const Text(
+
+      "Skardu",
+
+      style: TextStyle(
+
+        fontSize: 20,
+
+        fontWeight: FontWeight.w500,
+
+        color: Colors.black,
+
+      ),
+
+    ),
+
+    const SizedBox(height: 40),
+
+    Image.asset(AppAssets.bgOne, height: 220),
+
+    const SizedBox(height: 40),
+
+    const Text(
+
+      "Safe Rides, Anytime",
+
+      textAlign: TextAlign.center,
+
+      style: TextStyle(
+
+        fontSize: 24,
+
+        fontWeight: FontWeight.bold,
+
+        color: Colors.black,
+
+      ),
+
+    ),
+
+    const SizedBox(height: 8),
+
+    const Text(
+
+      "Anywhere",
+
+      textAlign: TextAlign.center,
+
+      style: TextStyle(
+
+        fontSize: 18,
+
+        fontWeight: FontWeight.bold,
+
+        color: Colors.black,
+
+      ),
+
+    ),
+
+    const SizedBox(height: 50),
+
+
+
+    SizedBox(
+
+      width: 35,
+
+      height: 35,
+
+      child: CircularProgressIndicator(
+
+        strokeWidth: 3,
+
+        color: Colors.green,
+
+      ),
+
+    ),
+
+
+
+    const Spacer(),
+  ],
+                ),
             ),
-          ),
+        ),
+        ),
+      );
+        },
         ),
       ),
     );

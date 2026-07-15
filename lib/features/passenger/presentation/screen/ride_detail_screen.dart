@@ -5,29 +5,76 @@ import 'package:bykea_skardu/features/passenger/presentation/bloc/passenger_stat
 import 'package:bykea_skardu/features/passenger/presentation/screen/passenger_home_screen.dart';
 import 'package:bykea_skardu/features/passenger/presentation/screen/passenger_ride_complete_screen.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_bloc.dart';
+import 'package:bykea_skardu/features/rider/bloc/rider/rider_event.dart';
 import 'package:bykea_skardu/features/rider/bloc/rider/rider_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../rider/presentation/ride_completed_screen.dart';
 
-class RideDetailsScreen extends StatelessWidget {
+class RideDetailsScreen extends StatefulWidget {
   const RideDetailsScreen({super.key});
 
   @override
+  State<RideDetailsScreen> createState() => _RideDetailsScreenState();
+}
+
+class _RideDetailsScreenState extends State<RideDetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<RiderBloc>().add(
+      ListenCurrentRideEvent(),
+    );
+  }
+  @override
   Widget build(BuildContext context) {
+    Future<void> _callRider(String phone) async {
+      final Uri uri = Uri.parse("tel:$phone");
+
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        debugPrint("Cannot launch: $uri");
+      }
+    }
     return BlocListener<PassegerBloc, PassengerState>(
+      listenWhen: (previous, current) {
+        return previous.ride?.status != current.ride?.status;
+      },
       listener: (context, state) {
-        if (state.ride?.status == 'completed') {
-          Navigator.push(
+
+        if (state.ride == null) return;
+
+        if (state.ride!.status == "completed") {
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (_) => const PassengerRideCompleteScreen(),
             ),
           );
         }
-    },
+
+        if (state.ride!.status == "cancelled") {
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Rider cancelled the ride"),
+            ),
+          );
+
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.passengerHome,
+                (route) => false,
+          );
+        }
+      },
       child: Scaffold(
         body: BlocBuilder<PassegerBloc, PassengerState>(
           buildWhen: (previous, current) => previous.ride != current.ride,
@@ -108,12 +155,18 @@ class RideDetailsScreen extends StatelessWidget {
                           child: Row(
                             children: [
 
-                              const CircleAvatar(
-                                radius: 28,
-                                backgroundColor: Colors.green,
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.white,
+                              GestureDetector(
+                                onTap: (){
+                              _callRider(ride.riderPhone!);
+                                },
+                                child: const CircleAvatar(
+                                  radius: 28,
+                                  backgroundColor: Colors.green,
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                  ),
+
                                 ),
                               ),
 
@@ -308,7 +361,7 @@ class RideDetailsScreen extends StatelessWidget {
                               onPressed: () {
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
-                                  AppRoutes.riderHome,
+                                  AppRoutes.passengerHome,
                                       (route) => false,
                                 );
                               },

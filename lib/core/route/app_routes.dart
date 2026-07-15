@@ -19,4 +19,6 @@ class AppRoutes {
   static const String privacyPolicy="privacyPolicy";
   static const String aboutApp="/aboutApp";
   static const String  bookings='/bookings';
+  static const String  rideProgress="/rideProgress";
+  static const String rideComplete="/rideComplete";
 }

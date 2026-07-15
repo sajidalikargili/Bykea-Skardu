@@ -37,12 +37,10 @@ class _RiderStandScreenState extends State<RiderStandScreen> {
   Widget build(BuildContext context) {
     final state = context.watch<RiderBloc>().state;
 
-    return SafeArea(
-      child: Scaffold(
-        body: state.isOnline
-            ? _onlineWidget(context, state)
-            : _offlineWidget(context, state),
-      ),
+    return Scaffold(
+      body: state.isOnline
+          ? _onlineWidget(context, state)
+          : _offlineWidget(context, state),
     );
   }
 
@@ -231,129 +229,253 @@ class _RiderStandScreenState extends State<RiderStandScreen> {
       BuildContext context,
       RiderState state,
       ) {
-    return Column(
-      children: [
+    return SingleChildScrollView(
+      child: Column(
+        children: [
 
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(24),
-          decoration: const BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-            ),
-          ),
-          child: Column(
+          /// Header
+          Stack(
+            clipBehavior: Clip.none,
             children: [
 
-              const Text(
-                "You are Online",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                state.selectStand ?? "",
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 18,
-                ),
-              ),
-              SizedBox(height: 30),
-              Image.asset(
-                AppAssets.bgOne,
-                height: 150,
+              Container(
                 width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(20, 35, 20, 120),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.green,
+                      Colors.green,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(35),
+                    bottomRight: Radius.circular(35),
+                  ),
+                ),
+                child: Column(
+                  children: [
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(.18),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+
+                          Icon(
+                            Icons.circle,
+                            color: Colors.greenAccent,
+                            size: 12,
+                          ),
+
+                          SizedBox(width: 8),
+
+                          Text(
+                            "ONLINE",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    const Text(
+                      "Ready to Receive Rides",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(.15),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+
+                          const Icon(
+                            Icons.location_on,
+                            color: Colors.white,
+                          ),
+
+                          const SizedBox(width: 6),
+
+                          Text(
+                            state.selectStand ?? "",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    Image.asset(
+                      AppAssets.bgOne,
+                      height: 160,
+                    ),
+                  ],
+                ),
               ),
-              Transform.translate( offset: const Offset(0, 70),child: Column(
-                children: [
-                  BlocBuilder<RiderBloc,RiderState>(builder: (context,state){
+
+              Positioned(
+                left: 20,
+                right: 20,
+                bottom: -55,
+                child: BlocBuilder<RiderBloc, RiderState>(
+                  builder: (context, state) {
                     return Row(
                       children: [
+
                         Expanded(
-                          child: _infoCard(
-                            "Riders Available",
-                            state.totalEarnings.toString(),
+                          child: _statCard(
+                            icon: Icons.attach_money,
+                            title: "Today's Earnings",
+                            value: "PKR ${state.totalEarnings}",
+                            color: Colors.orange,
                           ),
                         ),
-                        SizedBox(width: 10),
+
+                        const SizedBox(width: 15),
+
                         Expanded(
-                          child: _infoCard(
-                            "Riders Available",
-                            state.totalRides.toString(),
+                          child: _statCard(
+                            icon: Icons.motorcycle,
+                            title: "Total Rides",
+                            value: state.totalRides.toString(),
+                            color: Colors.blue,
                           ),
                         ),
                       ],
                     );
-                  }),
-
-                ],
-              ),)
+                  },
+                ),
+              ),
             ],
           ),
-        ),
 
-        const SizedBox(height: 80),
+          const SizedBox(height: 90),
 
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-
-              context.read<RiderBloc>().add(
-                GoOffLineEvent(),
-              );
-
-            },
-            child: const Text("Go Offline"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SizedBox(
+              width: double.infinity,
+              height: 58,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+                onPressed: () {
+                  context.read<RiderBloc>().add(
+                    GoOffLineEvent(),
+                  );
+                },
+                icon: const Icon(
+                  Icons.power_settings_new,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "Go Offline",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ),
-        )
-      ],
+
+          const SizedBox(height: 25),
+        ],
+      ),
     );
   }
-}
-Widget _infoCard(String title, String value) {
-  return Container(
-    padding: const EdgeInsets.symmetric(
-      vertical: 20,
-    ),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(
-        color: Colors.grey.shade300,
+  Widget _statCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.08),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 8,
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
+      child: Column(
+        children: [
 
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.grey.shade600,
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: color.withOpacity(.15),
+            child: Icon(
+              icon,
+              color: color,
+              size: 26,
+            ),
           ),
-        ),
 
-        const SizedBox(height: 10),
+          const SizedBox(height: 14),
 
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        )
-      ],
-    ),
-  );
+
+          const SizedBox(height: 6),
+
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
